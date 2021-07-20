@@ -18,43 +18,45 @@ var items = {
 
 var command = false
 
+onready var output_label = $ColorRect/RichTextLabel
+onready var location_label = $Location
+onready var line_edit = $LineEdit
+
 func _physics_process(delta):
-	$Location.text = current_location
+	location_label.text = current_location
 
 func _on_LineEdit_text_entered(new_text):
 	
-	$LineEdit.text = ""
+	line_edit.text = ""
 	
 	if command == false:
-		$ColorRect/RichTextLabel.bbcode_text += new_text + "\n"
+		output_label.bbcode_text += new_text + "\n"
 	else:
 		pass
 
-	if new_text == "look":
-		if current_location == all_locations[0]:
-			$ColorRect/RichTextLabel.bbcode_text += locations.cockpit + "\n"
-		elif current_location == all_locations[1]:
-			$ColorRect/RichTextLabel.bbcode_text += locations.cabin + "\n"
-	
-	elif new_text == "go to " + "cabin":
-		current_location = all_locations[1]
-		$ColorRect/RichTextLabel.bbcode_text = ""
-	
-	elif new_text == "go to " + "cockpit":
-		current_location = all_locations[0]
-		$ColorRect/RichTextLabel.bbcode_text = ""
-	
-	elif new_text == "check " + "flashing blue light":
-		if current_location == all_locations[0]:
-			$ColorRect/RichTextLabel.bbcode_text += items.flashing_blue_light + "\n"
+	match(new_text):
+		"look":
+			if current_location == all_locations[0]:
+				output_label.bbcode_text += locations.cockpit + "\n"
+			elif current_location == all_locations[1]:
+				output_label.bbcode_text += locations.cabin + "\n"
+		
+		"go to " + "cabin":
+			current_location = all_locations[1]
+			output_label.bbcode_text = ""
+		
+		"go to " + "cockpit":
+			current_location = all_locations[0]
+			output_label.bbcode_text = ""
+		
+		"check " + "flashing blue light":
+			if current_location == all_locations[0]:
+				output_label.bbcode_text += items.flashing_blue_light + "\n"
+
 
 
 func _on_LineEdit_text_changed(new_text):
-	if new_text == "look":
-		command = true
-	elif new_text == "go to " + "cabin" or new_text == "go to " + "cockpit":
-		command = true
-	elif new_text == "check flashing blue light":
+	if new_text == "look" or new_text == "go to " + "cabin" or new_text == "go to " + "cockpit" or new_text == "check flashing blue light":
 		command = true
 	else:
 		command = false
